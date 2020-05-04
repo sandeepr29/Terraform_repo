@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo "HELLO WELCOME TO TERRAFORM"
                 sh "/usr/local/bin/terraform init"
-                sh "/usr/local/bin/terraform apply -auto-approve"
+                sh "/usr/local/bin/terraform destroy -auto-approve"
              
             }
         }
