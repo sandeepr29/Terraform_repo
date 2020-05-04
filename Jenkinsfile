@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('terrfaorm') {
+        stage('Deploy') {
             steps {
                 echo "HELLO WELCOME TO TERRAFORM"
                 sh "/usr/local/bin/terraform init"
