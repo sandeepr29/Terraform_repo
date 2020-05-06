@@ -109,7 +109,7 @@ resource "aws_instance" "my-instance-1" {
         #depends_on = [aws_vpc.main.id]
         #vpc_id = "${aws_vpc.main.id}"
         subnet_id = "${aws_subnet.main-public-1.id}"
-        key_name = "TERRAFORM"
+        key_name = "centos"
         vpc_security_group_ids = ["${aws_security_group.instance.id}"]
        user_data = "${file("develop.sh")}"
         tags = {
