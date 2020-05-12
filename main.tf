@@ -1,12 +1,11 @@
-#provider
 provider "aws" {
         region = "us-east-1"
 }
 
 #VPC
 resource "aws_vpc" "main" {
-    cidr_block = "10.0.0.0/16"
-    instance_tenancy = "default"
+    cidr_block = "${var.vpc_cidr}"
+    instance_tenancy = "${var.tenancy}"
     enable_dns_support = "true"
     enable_dns_hostnames = "true"
     enable_classiclink = "false"
@@ -20,9 +19,9 @@ resource "aws_vpc" "main" {
 # Subnet 1
 resource "aws_subnet" "main-public-1" {
     vpc_id = "${aws_vpc.main.id}"
-    cidr_block = "10.0.1.0/24"
+    cidr_block = "${var.subnet_cidr[0]}"
     map_public_ip_on_launch = "true"
-    availability_zone = "us-east-1a"
+    availability_zone = "${var.zones[0]}"
 
     tags {
         Name = "main-public-aws1"
@@ -32,9 +31,9 @@ resource "aws_subnet" "main-public-1" {
 # Subnet 2
 resource "aws_subnet" "main-private-1" {
     vpc_id = "${aws_vpc.main.id}"
-    cidr_block = "10.0.4.0/24"
+    cidr_block = "${var.subnet_cidr[1]}"
     map_public_ip_on_launch = "true"
-    availability_zone = "us-east-1b"
+    availability_zone = "${var.zones[1]}"
 
     tags {
         Name = "main-private-aws1"
@@ -104,15 +103,27 @@ resource "aws_security_group" "instance" {
 #aws-instance-1
 #aws instance in subnet 1
 resource "aws_instance" "my-instance-1" {
-        ami = "ami-085925f297f89fce1"
-        instance_type = "t2.micro"
+        ami = "${var.ami}"
+        instance_type = "${var.instance_type}"
         #depends_on = [aws_vpc.main.id]
         #vpc_id = "${aws_vpc.main.id}"
         subnet_id = "${aws_subnet.main-public-1.id}"
-        key_name = "centos"
+        key_name = "${var.key_name}"
         vpc_security_group_ids = ["${aws_security_group.instance.id}"]
        user_data = "${file("develop.sh")}"
         tags = {
                 name = "my-instance-1"
         }
+}
+
+output "vpc_id" {
+ value = "${aws_vpc.main.id}"
+}
+
+output "pub_subnet_id" {
+ value = "${aws_subnet.main-public-1.id}"
+}
+
+output "psubnet_id" {
+ value =  "${aws_subnet.main-private-1.id}"
 }
